@@ -158,6 +158,7 @@ request_perform <- function(req, handle, refresh = TRUE) {
 
   url_scheme <- parse_url(resp$url)$scheme
   is_http <- tolower(url_scheme) %in% c("http", "https")
+  is_bad <- FALSE
   if (length(is_http) == 0) {
     cat("\nMissing `is_http`!!\n")
     print(str(list(
@@ -167,6 +168,7 @@ request_perform <- function(req, handle, refresh = TRUE) {
     )))
     is_http <- (tolower(url_scheme) %||% "") %in% c("http", "https")
     cat("Fixing `is_http` to ", is_http, "\n")
+    is_bad <- TRUE
   }
   if (is_http) {
     all_headers <- parse_http_headers(resp$headers)
@@ -194,6 +196,12 @@ request_perform <- function(req, handle, refresh = TRUE) {
     request = req,
     handle = handle
   )
+  
+  res$is_bad <- is_bad
+  if (is_bad) {
+    cat("bad httr reponse\n")
+    print(str(res))
+  }
 
   ## If the callback provides a result, we return that
   if (!is.null(cbres <- perform_callback("response", req, res))) {
