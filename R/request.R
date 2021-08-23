@@ -159,7 +159,11 @@ request_perform <- function(req, handle, refresh = TRUE) {
   url_to_parse <- 
     if (is.null(resp$url) || nchar(resp$url) == 0) {
       message("using input url!")    
-      resp$request$url
+      str(list(
+          req = as.list(req),
+          resp = as.list(resp)
+      ))
+      req$url
     } else {
       resp$url
     }
