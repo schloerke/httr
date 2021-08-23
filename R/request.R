@@ -156,9 +156,11 @@ request_perform <- function(req, handle, refresh = TRUE) {
     return(request_perform(req, handle, refresh = FALSE))
   }
 
+  is_req_url <- FALSE
   url_to_parse <- 
     if (is.null(resp$url) || nchar(resp$url) == 0) {
-      message("using input url!")    
+      cat("using input url!\n")
+      is_req_url <- TRUE
       str(list(
           req = as.list(req),
           resp = as.list(resp)
@@ -197,7 +199,7 @@ request_perform <- function(req, handle, refresh = TRUE) {
   }
 
   res <- response(
-    url = resp$url,
+    url = url_to_parse,
     status_code = resp$status_code,
     headers = headers,
     all_headers = all_headers,
@@ -213,6 +215,10 @@ request_perform <- function(req, handle, refresh = TRUE) {
   res$url_to_parse <- url_to_parse
   if (is_bad) {
     cat("bad httr reponse\n")
+    print(str(res))
+  }
+  if (is_req_url) {
+    cat("using req url to make reponse\n")
     print(str(res))
   }
 
