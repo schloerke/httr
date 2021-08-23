@@ -156,7 +156,14 @@ request_perform <- function(req, handle, refresh = TRUE) {
     return(request_perform(req, handle, refresh = FALSE))
   }
 
-  url_scheme <- parse_url(resp$url)$scheme
+  url_to_parse <- 
+    if (is.null(resp$url) || nchar(resp$url) == 0) {
+      message("using input url!")    
+      resp$request$url
+    } else {
+      resp$url
+    }
+  url_scheme <- parse_url(url_to_parse)$scheme
   is_http <- tolower(url_scheme) %in% c("http", "https")
   is_bad <- FALSE
   if (length(is_http) == 0) {
@@ -164,7 +171,8 @@ request_perform <- function(req, handle, refresh = TRUE) {
     print(str(list(
         req = as.list(req),
         res = as.list(res),
-        resp = as.list(resp)
+        resp = as.list(resp),
+        url_to_parse = url_to_parse
     )))
     is_http <- (tolower(url_scheme) %||% "") %in% c("http", "https")
     cat("Fixing `is_http` to ", is_http, "\n")
@@ -198,6 +206,7 @@ request_perform <- function(req, handle, refresh = TRUE) {
   )
   
   res$is_bad <- is_bad
+  res$url_to_parse <- url_to_parse
   if (is_bad) {
     cat("bad httr reponse\n")
     print(str(res))
