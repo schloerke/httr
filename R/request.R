@@ -165,7 +165,8 @@ request_perform <- function(req, handle, refresh = TRUE) {
         res = as.list(res),
         resp = as.list(resp)
     )))
-    stop("barret")
+    is_http <- (tolower(url_scheme) %||% "") %in% c("http", "https")
+    cat("Fixing `is_http` to ", is_http, "\n")
   }
   if (is_http) {
     all_headers <- parse_http_headers(resp$headers)
