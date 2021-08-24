@@ -165,6 +165,10 @@ request_perform <- function(req, handle, refresh = TRUE) {
           req = as.list(req),
           resp = as.list(resp)
       ))
+      cat("req options postfields!:\n")
+      print(rawToChar(req$options$postfields))
+      cat("resp content!:\n")
+      print(rawToChar(resp$content))
       req$url
     } else {
       resp$url
